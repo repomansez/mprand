@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from mpd import (MPDClient, CommandError)
+from mpd import (MPDClient, CommandError, ConnectionError)
 from random import choice
 from socket import error as SocketError
-from sys import exit
+import sys
 import logging
 
 # SETTINGS BECAUSE WHY NOT
@@ -14,6 +14,12 @@ PORT = '6600'
 PASSWORD = False
 #
 client = MPDClient()
+
+FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
+logging.basicConfig(format=FORMAT)
+root = logging.getLogger()
+root.setLevel(logging.INFO)
+
 
 def connectClient():
     try:
@@ -60,11 +66,7 @@ def startPlaying():
     checkPlaying()
     checkLastSong()
 
-
-def main ():
-    connectClient()
-    checkPassword()
-    startPlaying()
+def enqLoop():
     while True:
         client.idle('player')
         logging.info("Player event spotted")
@@ -72,12 +74,22 @@ def main ():
             enqRandom()
             logging.info("Enqueueing another song")
 
+def main ():
+    checkPassword()
+    startPlaying()
+    enqLoop()
+
 if __name__ == "__main__":
-    try:
-        main()
-    except:
-        logging.error("Something bad happened, maybe you crashed mpd or skipped too fast it stopped?")
-        exit(1)
-
-
-
+    connectClient()
+    while True: 
+            try:
+                main()
+            except ConnectionError:
+                logging.error("CONNECTION ERROR: could not connect to MPD, did it crash? Exiting.")
+                exit(1)
+            except Exception as ex:
+                logging.warn("UNKNOWN: Something bad happened, what did you do? Trying to recover.")
+                continue
+            except:
+                logging.error("Couldn't recover, dying")
+                exit(1)
