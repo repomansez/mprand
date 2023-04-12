@@ -6,6 +6,7 @@ from random import choice
 from socket import error as SocketError
 import sys
 import logging
+import pdb
 
 # SETTINGS BECAUSE WHY NOT
 #
@@ -88,8 +89,11 @@ if __name__ == "__main__":
                 logging.error("CONNECTION ERROR: could not connect to MPD, did it crash? Exiting.")
                 exit(1)
             except Exception as ex:
-                logging.warn("UNKNOWN: Something bad happened, what did you do? Trying to recover.")
+                logging.warning("UNKNOWN: Something bad happened, what did you do? Trying to recover.")
                 continue
+            except KeyboardInterrupt:
+                print("\nKeyboardInterrupt detected, terminating.")
+                exit(0)
             except:
                 logging.error("Couldn't recover, dying")
                 exit(1)
