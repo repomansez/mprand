@@ -29,6 +29,9 @@ def connectClient():
         logging.error("SOCKET ERROR: couldnt connect to mpd, maybe start it dumbass")
         exit(1)
 
+def disconnectClient():
+    client.close()
+
 def checkPassword():
     if PASSWORD:
         try:
@@ -62,10 +65,13 @@ def checkLastSong():
         return True 
 
 def startPlaying():
-    client.clear()
-    enqRandom()
-    checkPlaying()
-    checkLastSong()
+    if (client.status()['playlistlength']) == '0':
+        enqRandom()
+        client.play()
+    else:
+        if (checkLastSong()):
+            enqRandom()
+        checkPlaying()
 
 def enqLoop():
     while True:
@@ -86,14 +92,16 @@ if __name__ == "__main__":
             try:
                 main()
             except ConnectionError:
-                logging.error("CONNECTION ERROR: could not connect to MPD, did it crash? Exiting.")
+                logging.error("CONNECTION ERROR: could not connect to MPD, did it crash? Terminating.")
                 exit(1)
             except Exception as ex:
                 logging.warning("UNKNOWN: Something bad happened, what did you do? Trying to recover.")
                 continue
             except KeyboardInterrupt:
                 print("\nKeyboardInterrupt detected, terminating.")
+                disconnectClient()
                 exit(0)
             except:
-                logging.error("Couldn't recover, dying")
+                logging.error("Couldn't recover, terminating")
+                disconnectClient()
                 exit(1)
