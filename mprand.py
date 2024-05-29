@@ -21,18 +21,18 @@ root = logging.getLogger()
 root.setLevel(logging.INFO)
 
 # Connects mprand to the MPD daemon
-def connectClient():
+def connect_client():
     try:
         client.connect(host=HOST, port=PORT)
     except SocketError:
         logging.error("SOCKET ERROR: couldnt connect to mpd, maybe start it dumbass")
         exit(1)
 
-def disconnectClient():
+def disconnect_client():
     client.close()
 
 # If MPD requires a password, SET IT HERE 
-def checkPassword():
+def check_password():
     if PASSWORD:
         try:
             client.password(PASSWORD)
@@ -42,16 +42,16 @@ def checkPassword():
 
 # Uses client.list["file"] to get a list of all files in the MPD database
 # then uses random.choice() to pick and return a random one
-def getrandomsong():
+def get_random_song():
     piss = choice(client.list("file"))
     return piss['file']
 
-def enqRandom():
-    client.add(getrandomsong())
+def enqueue_random():
+    client.add(get_random_song())
 
 # If MPD is not playing, start playing. If it is already playing, do nothing. If it errors out for some reason it also does nothing
 # bc i have no idea what exactly could go wrong here that isnt filtered already 
-def checkPlaying():
+def check_playing():
     try:
         if not client.status()['state'] == "play":
             client.play()
@@ -63,40 +63,41 @@ def checkPlaying():
 
 # If the playlist length is equal to the position of the song + 1, that means you're on the last song (i guess) 
 # and the script should enqueue another song to prevent mpd from stopping 
-def checkLastSong():
+def check_last_song():
     songPos = client.status()['song']
     playPos = client.status()['playlistlength']
     
     if int(playPos) == int(songPos) + 1:
+        logging.info("Last song detected, enqueueing new song")
         return True 
 
 # If the playlist is empty, enqueue a song and start playing. 
 # If it's not, then check if its on the last song. If it is, enqueue a new one. If it isn't, do nothing apart from checking if it's playing or not.
-def startPlaying():
+def start_playing():
     if (client.status()['playlistlength']) == '0':
-        enqRandom()
+        enqueue_random()
         client.play()
     else:
-        if (checkLastSong()):
-            enqRandom()
-        checkPlaying()
+        if (check_last_song()):
+            enqueue_random()
+        check_playing()
 
 # Use the mpd idle feature to wait for a player event (which unfortunately also includes pauses and such, which will get logged too, cluttering the stdout a bit)
-def enqLoop():
+def enqueue_loop():
     while True:
         client.idle('player')
         logging.info("Player event spotted")
-        if checkLastSong():
-            enqRandom()
+        if check_last_song():
+            enqueue_random()
             logging.info("Enqueueing another song")
 
 def main ():
-    checkPassword()
-    startPlaying()
-    enqLoop()
+    check_password()
+    start_playing()
+    enqueue_loop()
 
 if __name__ == "__main__":
-    connectClient()
+    connect_client()
     while True: 
             try:
                 main()
@@ -108,9 +109,9 @@ if __name__ == "__main__":
                 continue
             except KeyboardInterrupt:
                 print("\nKeyboardInterrupt detected, terminating.")
-                disconnectClient()
+                disconnect_client()
                 exit(0)
             except:
                 logging.error("Couldn't recover, terminating")
-                disconnectClient()
+                disconnect_client()
                 exit(1)
