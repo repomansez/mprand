@@ -108,7 +108,7 @@ if __name__ == "__main__":
                 logging.warning("UNKNOWN: Something bad happened, what did you do? Trying to recover.")
                 continue
             except KeyboardInterrupt:
-                print("\nKeyboardInterrupt detected, terminating.")
+                logging.critical("KeyboardInterrupt detected, terminating.")
                 disconnect_client()
                 exit(0)
             except:
