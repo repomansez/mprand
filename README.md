@@ -11,8 +11,10 @@ If mpd is not playing, it'll start playing, if the playlist is empty, it'll enqu
 
 ## Contributing
 If you find any bugs or think you know a way to improve my shitty code, feel free to create a pull request or something idk.
-(https://github.com/repomansez/mprand/blob/master/video/example.mp4)
+
 You can also find me on irc (libera.chat) @ repoman
+
+and on Matrix @sbctani:matrix.sussywebsite.xyz
 
 ## Dependencies
 [python-mpd2](https://github.com/Mic92/python-mpd2)
