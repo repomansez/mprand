@@ -77,6 +77,8 @@ def start_playing():
     if (client.status()['playlistlength']) == '0':
         enqueue_random()
         client.play()
+    elif (client.status()['state']) == 'stop':
+        client.play()
     else:
         if (check_last_song()):
             enqueue_random()
@@ -104,14 +106,13 @@ if __name__ == "__main__":
             except ConnectionError:
                 logging.error("CONNECTION ERROR: could not connect to MPD, did it crash? Terminating.")
                 exit(1)
-            except Exception as ex:
-                logging.warning("UNKNOWN: Something bad happened, what did you do? Trying to recover.")
-                continue
             except KeyboardInterrupt:
                 logging.critical("KeyboardInterrupt detected, terminating.")
-                disconnect_client()
                 exit(0)
             except:
-                logging.error("Couldn't recover, terminating")
-                disconnect_client()
-                exit(1)
+                logging.warning("UNKNOWN: Oh no, an exception! It was prolly nothing, trying to continue.")
+                try:
+                    continue
+                except:
+                    logging.critical("Couldn't recover, terminating.")
+                    exit(1)
