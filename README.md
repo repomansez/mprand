@@ -23,4 +23,4 @@ and on Matrix @sbctani:matrix.sussywebsite.xyz
 https://github.com/repomansez/mprand/assets/62445306/10f4deb3-71b5-4fdf-8abc-d64a226c256a
 
 ## Known bugs
-If you skip songs too fast, you outpace MPD itself and playback stops, which causes mprand to crash. Workaround for that is to just stop your brainrotten zoomer ass from skipping songs too fast.
+none!!!!!!! probably about one trillion unknown ones though.
