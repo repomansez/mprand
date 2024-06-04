@@ -20,7 +20,9 @@ and on Matrix @sbctani:matrix.sussywebsite.xyz
 [python-mpd2](https://github.com/Mic92/python-mpd2)
 
 ## Video example of usage with ncmpcpp
-https://github.com/repomansez/mprand/assets/62445306/2f70686a-8a3a-4148-ba58-7ecaa7340be5
+
+
+https://github.com/repomansez/mprand/assets/62445306/ddb3cb6c-3dd7-4688-a5a7-446b1d1eb949
 
 
 ## Known bugs
