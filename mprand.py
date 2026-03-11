@@ -106,11 +106,15 @@ if __name__ == "__main__":
                 main()
             except ConnectionError:
                 logging.error("CONNECTION ERROR: could not connect to MPD, did it crash? Terminating.")
-                exit(1)
+                sys.exit(1)
             except KeyboardInterrupt:
                 logging.critical("KeyboardInterrupt detected, terminating.")
                 disconnect_client()
-                exit(0)
+                sys.exit(0)
+            except IndexError:
+                logging.critical("Cannot choose from an empty playlist")
+                disconnect_client()
+                sys.exit(1)
             except:
                 logging.warning("UNKNOWN: Oh no, an exception! It was prolly nothing, trying to continue.")
                 try:
