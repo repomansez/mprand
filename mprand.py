@@ -6,40 +6,70 @@ from random import choice
 from socket import error as SocketError
 import sys
 import logging
+import argparse
+
+parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(add_help=False)
+parser.add_argument("--quiet", "-q", action="store_true")
+parser.add_argument("--host", "-s", default="localhost")
+parser.add_argument("--port", "-p", type=int, default=6600)
+parser.add_argument("--help", "-h", action="store_true")
+parser.add_argument("--password", "-P", nargs="?", const="",default=None)
+args = parser.parse_args()
+
+def print_help():
+    print("""mprand - enqueue random songs in MPD
+
+Usage:
+  mprand [options]
+
+Options:
+  -q, --quiet           Disable logging output
+  -s, --host HOST       MPD host (default: localhost)
+  -p, --port PORT       MPD port (default: 6600)
+  -h, --help            Show this help message and exit
+  -P, --password        MPD Password (if you use one)
+""")
+
+if args.help:
+    print_help()
+    sys.exit(0)
 
 # SETTINGS BECAUSE WHY NOT
 #
-HOST = 'localhost'
-PORT = 6600
-PASSWORD = False
+HOST = args.host
+PORT = args.port
+PASSWORD= args.password is not None
 #
 client = MPDClient()
 
 FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
 logging.basicConfig(format=FORMAT)
 root = logging.getLogger()
-root.setLevel(logging.INFO)
+if args.quiet:
+    root.setLevel(logging.CRITICAL)
+else:
+    root.setLevel(logging.INFO)
 
 # Connects mprand to the MPD daemon
 def connect_client():
     try:
         client.connect(host=HOST, port=PORT)
     except SocketError:
-        logging.error("SOCKET ERROR: couldnt connect to mpd, maybe start it dumbass")
-        exit(1)
+        logging.critical("SOCKET ERROR: couldnt connect to mpd, maybe start it dumbass")
+        sys.exit(1)
 
 def disconnect_client():
     client.close()
     client.disconnect()
 
-# If MPD requires a password, SET IT HERE 
 def check_password():
-    if PASSWORD:
+    if args.password is not None:
         try:
-            client.password(PASSWORD)
+            client.password(args.password)
         except CommandError:
-            logging.error("Prolly wrong password bro")
-            exit(1)
+            logging.critical("Prolly wrong password bro")
+            sys.exit(1)
 
 # Uses client.list["file"] to get a list of all files in the MPD database
 # then uses random.choice() to pick and return a random one
@@ -101,6 +131,7 @@ def main ():
 
 if __name__ == "__main__":
     connect_client()
+    attempt = 1
     while True: 
             try:
                 main()
@@ -118,6 +149,9 @@ if __name__ == "__main__":
             except:
                 logging.warning("UNKNOWN: Oh no, an exception! It was prolly nothing, trying to continue.")
                 try:
+                    attempt = attempt+1
+                    if attempt == 4:
+                        sys.exit(1)
                     continue
                 except:
                     logging.critical("Couldn't recover, terminating.")
