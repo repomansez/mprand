@@ -60,8 +60,8 @@ def check_password(args):
         client.status()
     except CommandError as e:
         if "permission" in str(e).lower():
-            logging.critical("MPD requires a password")
             if args.password is None:
+                logging.critical("MPD requires a password")
                 pw = getpass.getpass("MPD password: ")
             else:
                 pw = args.password
@@ -127,6 +127,9 @@ def enqueue_loop():
         if check_last_song():
             enqueue_random()
             logging.info("Enqueueing another song")
+def recover():
+    start_playing()
+    enqueue_loop()
 
 def main ():
     args = parse_args()
@@ -162,7 +165,10 @@ if __name__ == "__main__":
                     attempt = attempt+1
                     if attempt == 4:
                         sys.exit(1)
-                    continue
+                    recover()
+                except KeyboardInterrupt:
+                        logging.critical("KeyboardInterrupt detected, terminating")
+                        sys.exit(1)
                 except:
                     logging.critical("Couldn't recover, terminating.")
                     disconnect_client()
