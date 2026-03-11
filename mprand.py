@@ -4,6 +4,7 @@
 from mpd import (MPDClient, CommandError, ConnectionError)
 from random import choice
 from socket import error as SocketError
+import getpass
 import sys
 import logging
 import argparse
@@ -55,12 +56,24 @@ def disconnect_client():
     client.disconnect()
 
 def check_password(args):
-    if args.password is not None:
-        try:
-            client.password(args.password)
-        except CommandError:
-            logging.critical("Prolly wrong password bro")
-            sys.exit(1)
+    try:
+        client.status()
+    except CommandError as e:
+        if "permission" in str(e).lower():
+            logging.critical("MPD requires a password")
+            if args.password is None:
+                pw = getpass.getpass("MPD password: ")
+            else:
+                pw = args.password
+
+            try:
+                client.password(pw)
+            except CommandError:
+                logging.critical("Prolly wrong password bro")
+                sys.exit(1)
+        else:
+            raise
+
 
 # Uses client.list["file"] to get a list of all files in the MPD database
 # then uses random.choice() to pick and return a random one
