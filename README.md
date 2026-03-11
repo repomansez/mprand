@@ -14,7 +14,7 @@ If you find any bugs or think you know a way to improve my shitty code, feel fre
 
 You can also find me on irc (libera.chat) @ repoman
 
-and on Matrix @sbctani:matrix.sussywebsite.xyz
+and on Telegram @repomansez
 
 ## Dependencies
 [python-mpd2](https://github.com/Mic92/python-mpd2)
