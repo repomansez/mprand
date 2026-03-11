@@ -10,7 +10,7 @@ import logging
 # SETTINGS BECAUSE WHY NOT
 #
 HOST = 'localhost'
-PORT = '6600'
+PORT = 6600
 PASSWORD = False
 #
 client = MPDClient()
