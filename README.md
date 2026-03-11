@@ -9,12 +9,20 @@ Just have MPD running and run the script.
 
 If mpd is not playing, it'll start playing, if the playlist is empty, it'll enqueue two songs, if the playlist is not empty it'll only enqueue a new song if you're on the last or second to last song of the playlist.
 
+Options:
+  -q, --quiet           Disable logging output
+  -s, --host HOST       MPD host (default: localhost)
+  -p, --port PORT       MPD port (default: 6600)
+  -h, --help            Show this help message and exit
+  -P, --password        MPD Password (if you use one)
+
+
 ## Contributing
 If you find any bugs or think you know a way to improve my shitty code, feel free to create a pull request or something idk.
 
 You can also find me on irc (libera.chat) @ repoman
 
-and on Matrix @sbctani:matrix.sussywebsite.xyz
+and on Telegram @repomansez
 
 ## Dependencies
 [python-mpd2](https://github.com/Mic92/python-mpd2)
