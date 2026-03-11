@@ -30,6 +30,7 @@ def connect_client():
 
 def disconnect_client():
     client.close()
+    client.disconnect()
 
 # If MPD requires a password, SET IT HERE 
 def check_password():
@@ -108,6 +109,7 @@ if __name__ == "__main__":
                 exit(1)
             except KeyboardInterrupt:
                 logging.critical("KeyboardInterrupt detected, terminating.")
+                disconnect_client()
                 exit(0)
             except:
                 logging.warning("UNKNOWN: Oh no, an exception! It was prolly nothing, trying to continue.")
