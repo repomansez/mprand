@@ -26,7 +26,7 @@ def connect_client():
         client.connect(host=HOST, port=PORT)
     except SocketError:
         logging.error("SOCKET ERROR: couldnt connect to mpd, maybe start it dumbass")
-        exit(1)
+        sys.exit(1)
 
 def disconnect_client():
     client.close()
@@ -39,7 +39,7 @@ def check_password():
             client.password(PASSWORD)
         except CommandError:
             logging.error("Prolly wrong password bro")
-            exit(1)
+            sys.exit(1)
 
 # Uses client.list["file"] to get a list of all files in the MPD database
 # then uses random.choice() to pick and return a random one
