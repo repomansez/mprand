@@ -4,17 +4,54 @@ Play random songs within your MPD database.
 Project focus is to be as simple and stupid as possible.
 
 This script was inspired by oldlaptop's [mprand](https://github.com/oldlaptop/mprand) script, written in Tcl, which isn't simple (in a bad way) nor stupid. Thanks to him for his help and inspiration.
+
+## Install
+
+Install the dependency first.
+
+### Arch Linux
+
+```bash
+pacman -S python-mpd2
+```
+
+### FreeBSD
+
+```bash
+pkg install py311-mpd2
+```
+
+Then install the script:
+
+```bash
+sudo make install
+```
+
+---
+
 ## Usage
-Just have MPD running and run the script.
 
-If mpd is not playing, it'll start playing, if the playlist is empty, it'll enqueue two songs, if the playlist is not empty it'll only enqueue a new song if you're on the last or second to last song of the playlist.
+Make sure MPD is running, then run:
 
-Options:
-  -q, --quiet           Disable logging output
-  -s, --host HOST       MPD host (default: localhost)
-  -p, --port PORT       MPD port (default: 6600)
-  -h, --help            Show this help message and exit
-  -P, --password        MPD Password (if you use one)
+```bash
+mprand
+```
+
+Behavior:
+
+- If MPD is **not playing**, it will start playback.
+- If the playlist is **empty**, it will enqueue two songs.
+- If the playlist already contains songs, it will only enqueue a new one when you reach the **last or second-to-last track**.
+
+### Options
+
+```
+-q, --quiet            Disable logging output
+-s, --host HOST        MPD host (default: localhost)
+-p, --port PORT        MPD port (default: 6600)
+-h, --help             Show help and exit
+-P, --password         MPD password (if required)
+```
 
 
 ## Contributing
