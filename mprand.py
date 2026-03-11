@@ -121,4 +121,5 @@ if __name__ == "__main__":
                     continue
                 except:
                     logging.critical("Couldn't recover, terminating.")
-                    exit(1)
+                    disconnect_client()
+                    sys.exit(1)
