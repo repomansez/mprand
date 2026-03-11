@@ -71,4 +71,4 @@ https://github.com/repomansez/mprand/assets/62445306/ddb3cb6c-3dd7-4688-a5a7-446
 
 
 ## Known bugs
-none!!!!!!! probably about one trillion unknown ones though.
+crash if cleaning the playlist more than once, too lazy to fix it rn
