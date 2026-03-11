@@ -9,7 +9,7 @@ import sys
 import logging
 import argparse
 
-def parse_args():
+def parse_args(): # If you wish to change any default setting, change the value in here
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("--quiet", "-q", action="store_true")
     parser.add_argument("--host", "-s", default="localhost")
@@ -35,7 +35,7 @@ Options:
 client = MPDClient()
 
 def setup_logging(args):
-    FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
+    FORMAT = '%(levelname)s - %(message)s'
     logging.basicConfig(format=FORMAT)
     root = logging.getLogger()
     if args.quiet:
