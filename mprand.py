@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from mpd import (MPDClient, CommandError, ConnectionError)
@@ -8,14 +8,14 @@ import sys
 import logging
 import argparse
 
-parser = argparse.ArgumentParser()
-parser = argparse.ArgumentParser(add_help=False)
-parser.add_argument("--quiet", "-q", action="store_true")
-parser.add_argument("--host", "-s", default="localhost")
-parser.add_argument("--port", "-p", type=int, default=6600)
-parser.add_argument("--help", "-h", action="store_true")
-parser.add_argument("--password", "-P", nargs="?", const="",default=None)
-args = parser.parse_args()
+def parse_args():
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("--quiet", "-q", action="store_true")
+    parser.add_argument("--host", "-s", default="localhost")
+    parser.add_argument("--port", "-p", type=int, default=6600)
+    parser.add_argument("--help", "-h", action="store_true")
+    parser.add_argument("--password", "-P", nargs="?", const="",default=None)
+    return parser.parse_args()
 
 def print_help():
     print("""mprand - enqueue random songs in MPD
@@ -31,39 +31,30 @@ Options:
   -P, --password        MPD Password (if you use one)
 """)
 
-if args.help:
-    print_help()
-    sys.exit(0)
-
-# SETTINGS BECAUSE WHY NOT
-#
-HOST = args.host
-PORT = args.port
-PASSWORD= args.password is not None
-#
 client = MPDClient()
 
-FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
-logging.basicConfig(format=FORMAT)
-root = logging.getLogger()
-if args.quiet:
-    root.setLevel(logging.CRITICAL)
-else:
-    root.setLevel(logging.INFO)
+def setup_logging(args):
+    FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
+    logging.basicConfig(format=FORMAT)
+    root = logging.getLogger()
+    if args.quiet:
+        root.setLevel(logging.CRITICAL)
+    else:
+        root.setLevel(logging.INFO)
 
 # Connects mprand to the MPD daemon
-def connect_client():
+def connect_client(args):
     try:
-        client.connect(host=HOST, port=PORT)
+        client.connect(host=args.host, port=args.port)
     except SocketError:
-        logging.critical("SOCKET ERROR: couldnt connect to mpd, maybe start it dumbass")
+        logging.critical("SOCKET ERROR: couldnt connect to mpd, is the server running? is the host correct?")
         sys.exit(1)
 
 def disconnect_client():
     client.close()
     client.disconnect()
 
-def check_password():
+def check_password(args):
     if args.password is not None:
         try:
             client.password(args.password)
@@ -125,12 +116,18 @@ def enqueue_loop():
             logging.info("Enqueueing another song")
 
 def main ():
-    check_password()
+    args = parse_args()
+    if args.help:
+        print_help()
+        sys.exit(1)
+
+    setup_logging(args)
+    connect_client(args)
+    check_password(args)
     start_playing()
     enqueue_loop()
 
 if __name__ == "__main__":
-    connect_client()
     attempt = 1
     while True: 
             try:
@@ -146,7 +143,7 @@ if __name__ == "__main__":
                 logging.critical("Cannot choose from an empty playlist")
                 disconnect_client()
                 sys.exit(1)
-            except:
+            except Exception:
                 logging.warning("UNKNOWN: Oh no, an exception! It was prolly nothing, trying to continue.")
                 try:
                     attempt = attempt+1
