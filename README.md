@@ -18,7 +18,7 @@ pacman -S python-mpd2
 ### FreeBSD
 
 ```bash
-pkg install py311-mpd2
+pkg install py311-python-mpd2
 ```
 
 Then install the script:
