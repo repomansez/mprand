@@ -12,7 +12,7 @@ check-deps:
 	( echo "Error: python-mpd2 is not installed."; \
 	  echo "Install it with:"; \
 	  echo "  pip install python-mpd2"; \
-	  echo "or (FreeBSD): pkg install py311-mpd2"; \
+	  echo "or (FreeBSD): pkg install py311-python-mpd2"; \
 	  exit 1 )
 
 install: check-deps
